@@ -31,15 +31,15 @@ int main()
 	 * and a port. For that we use a C structure of type `sockaddr_in`. This structure is 
 	 * defined as follows: (man 7 ip)
 	 *
-	 *	    struct sockaddr_in {
-     *          sa_family_t    sin_family; 
-     *          in_port_t      sin_port;
-     *          struct in_addr sin_addr;
-     *      };
+	 * struct sockaddr_in {
+	 *		sa_family_t    sin_family; 
+	 *		in_port_t      sin_port;
+	 *		struct in_addr sin_addr;
+	 * };
 	 *
-     *      struct in_addr {
-     *          uint32_t       s_addr;
-     *      };
+	 * struct in_addr {
+	 *		uint32_t       s_addr;
+	 * };
 	 *
 	 */
 
