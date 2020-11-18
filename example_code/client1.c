@@ -1,12 +1,25 @@
 /*
  * This C program depicts the basic steps required
  * to write a TCP/IP client.
+ *
+ * The debug macros are copied from the book "Learn C The Hard Way" by Zed Shaw.
  */ 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
+#include <stdio.h>
+
+#define clean_error() (errno == 0 ? "None" : strerror(errno))
+
+#define log_err(M, ...) fprintf(stderr, \
+		"[ERROR] (%s:%d: errno: %s) " M "\n", \
+		__FILE__, __LINE__, clean_error(), ##__VA_ARGS__)
+
+#define check(A, M, ...) if(!(A)) { \
+		log_err(M, ##__VA_ARGS__); errno = 0; goto error; }
 
 struct sockaddr_in server_addr;
 
@@ -36,7 +49,8 @@ int main()
 	/*
 	 * Step 2 -> connect() system call initiates a connection to the server
 	 */
-	connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr));
+	check(connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) != -1,
+			"Client connection initiation failed!!!");
 
 	/*
 	 * Once the connection is successfully established, client can write data
@@ -45,4 +59,8 @@ int main()
 	send(sock, "hello", strlen("hello"), 0);
 	close(sock);
 	return 0;
+
+error:
+	close(sock);
+	return -1;
 }
